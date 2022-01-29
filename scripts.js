@@ -21,10 +21,7 @@ const onClick = function() {
     if (this.innerHTML == "") {
         player == 'X' ? this.innerHTML = "X" : this.innerHTML = "O";
         if (checkWin(player) == true) {endGame(player);
-        } else {
-            player = player == "X" ? "O" : "X";
-            console.log('player changed to:', player);
-            console.log(++counter);
+        } else { player = player == "X" ? "O" : "X";
         }
         if (counter == 9){endGame(0)}
     }
