@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="viewport" content="minimal-ui, width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimum-scale=1.0, viewport-fit=cover">
+    <title>TicTacToe</title>
+
+    <link rel='stylesheet' href="styles.css">
+
+</head>
+<body>
+
+    <div class="container" id="container">
+        <table class="wrapper">
+            <tr>
+                <td id="sqr1"></td>
+                <td id="sqr2"></td>
+                <td id="sqr3"></td>
+            </tr>
+            <tr>
+                <td id="sqr4"></td>
+                <td id="sqr5"></td>
+                <td id="sqr6"></td>
+            </tr>
+            <tr>
+                <td id="sqr7"></td>
+                <td id="sqr8"></td>
+                <td id="sqr9"></td>
+            </tr>
+        </table>
+    </div>
+
+    <div id="modal" class="modal animated fadeIn">
+
+        <!-- Modal content -->
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modal_text" ></h2>
+            </div>
+            <div class="modal-body">
+            <btn id="restartBtn">Play Again</btn>
+        </div>
+        </div>
+
+    </div>
+
+
+
+    <div class="form-group" style="margin-top: 12%; float:right; position: relative; ">
+        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+          <button onclick = "ShowAndHide()" style = "bottom:0%;right:0%;position:fixed;" type="submit" id="btndisclaimer">RRS</button>
+
+        </div>
+    </div>
+
+    <script src="scripts.js"></script>
+</body>
+</html>
