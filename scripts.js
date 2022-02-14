@@ -1,67 +1,172 @@
-let realWidth; resizeElem(); var player = "X"; var counter = 0;
+let realWidth; resizeElem(); let player = "X"; let gameMode = '2 players';
+let origBoard; const aiPlayer = '🤖'; const huPlayer = 'X';
+const winCombos = [[0, 1, 2],[3, 4, 5],[6, 7, 8],[0, 3, 6],[1, 4, 7],[2, 5, 8],[0, 4, 8],[6, 4, 2]]
+origBoard = Array.from(Array(9).keys());
+$(window).resize(resizeElem);
+$('#aibtn').html("Game mode: " + gameMode);
+gameMode == 'AI' ? $("#info").html("Player X vs A.I.") : $("#info").html("Next player: " + player);
 
-var allWins = [[1, 2, 3], [4, 5, 6], [7, 8, 9], [1, 4, 7], [2, 5, 8], [3, 6, 9], [1, 5, 9], [3, 5, 7]];
+$('#restartBtn').click(restart)
 
-// for (let i of document.getElementsByTagName("td")) {i.innerHTML="X"};
-// document.getElementById("sqr1").innerHTML = "X";
+$('.switch-button').click( () => {
+  if (gameMode == '2 players') {
+    gameMode = 'AI';
+    restart();
+    $("#info").html("Player X vs A.I.");
+  } else {
+    gameMode = '2 players'
+    restart();
+  }
+});
 
-window.addEventListener('resize', resizeElem);
+$('.cell').click(onClick)
 
-function resizeElem(){
-    realWidth = window.innerWidth < window.innerHeight ? window.innerWidth*0.95 : window.innerHeight*0.95;
-    realWidth = realWidth > 600 ? 600 : realWidth;
-    document.getElementById("container").style.width = realWidth+"px";
-    document.getElementById("container").style.height = realWidth+"px";
-    document.getElementById("container").style.fontSize = realWidth*0.25+"px";
-    for (let i of document.getElementsByTagName("td")) {i.style.width = realWidth*0.30+"px"};
-    for (let i of document.getElementsByTagName("td")) {i.style.height = realWidth*0.30+"px"};
-}
-
-const onClick = function() {
+function onClick() {
+  if (gameMode == '2 players') {
     if (this.innerHTML == "") {
-        player == 'X' ? this.innerHTML = "X" : this.innerHTML = "O";
-        if (checkWin(player) == true) {endGame(player);
-        } else { player = player == "X" ? "O" : "X";
+      player == 'X' ? this.innerHTML = "X" : this.innerHTML = "O";
+      origBoard[this.id] = player;
+      let gameWon = checkWin(origBoard, player)
+      if (gameWon) {
+        endGame(gameWon);
+      } else {
+        player = player == "X" ? "O" : "X";
+        if (emptyCells().length == 0) { endGame(gameWon) };
+        $("#info").html("Next player: " + player);
+      }
+    }
+  } else { // AI gameMode
+    if (this.innerHTML == "") {
+      this.innerHTML = huPlayer;
+      origBoard[this.id] = huPlayer;
+      let gameWon = checkWin(origBoard, huPlayer);
+      if (gameWon || emptyCells().length == 0) {
+        endGame(gameWon);
+      } else { // AI turn
+        setTimeout(AIturn, 200);
+        function AIturn() {
+          sqr(bestSpot()).innerHTML = aiPlayer;
+          origBoard[bestSpot()] = aiPlayer;
+          let gameWon = checkWin(origBoard, aiPlayer);
+          if (gameWon) endGame(gameWon);
         }
-        if (counter == 9){endGame(0)}
+      }
     }
+  }
 }
 
-for (let i of document.getElementsByTagName("td")) {i.onclick = onClick}
+function sqr(i) {return document.getElementById(i)}
 
-function sqr(i) {return document.getElementById("sqr"+i).innerHTML}
-
-function checkWin(player){
-    let checkBoard = allWins.some(i => {
-        return sqr(i[0]) == player && sqr(i[1]) == player && sqr(i[2]) == player;
-    })
-    return checkBoard;
+function checkWin(board, player) {
+  let plays = board.reduce((a, e, i) =>
+      (e === player) ? a.concat(i) : a, []);
+  let gameWon = null;
+  for (let [index, win] of winCombos.entries()) {
+      if (win.every(elem => plays.indexOf(elem) > -1)) {
+          gameWon = { index: index, player: player };
+          break;
+      }
+  }
+  return gameWon;
 }
 
-function endGame(z) {
-    if (z == 0) {
-        document.getElementById("modal_text").innerHTML = "Tie  game !";
-        document.getElementById("modal").style.display = "block";
-    } else {
-        document.getElementById("modal_text").innerHTML = `Player  ${z}  wins !`;
-        document.getElementById("modal").style.display = "block";
-    }
+function endGame(checkWin) {
+  if (emptyCells().length == 0) {
+      $("#modal_text").html("Tie  game !");
+      $("#modal").css({display: "block"});
+  } else {
+    for (let i of winCombos[checkWin.index]) sqr(i).style.background = "rgba(255, 0, 0, 0.3)";
+    $("#modal_text").html(`Player  ${checkWin.player}  wins !`);
+    $("#modal").css({display: "block"});
+  }
 }
 
-document.getElementById("restartBtn").onclick = function(){
-    for (let i of document.getElementsByTagName("td")) {i.innerHTML=""};
-    player = "X";
-    counter = 0;
-    document.getElementById("modal").style.display = "none";
+function restart() {
+  $('.cell').html("");
+  $('.cell').css({background: 'rgba(255, 255, 255, 0.2)'});
+  player = "X";
+  $("#modal").css({display: "none"});
+  origBoard = Array.from(Array(9).keys());
+  gameMode == 'AI' ? $("#info").html("Player X vs A.I.") : $("#info").html("Next player: " + player);
 }
 
-function ShowAndHide() {
-    var x = document.getElementById("btndisclaimer");
-    if (x.style.color == 'white') {
-        x.style.color = 'transparent';
-    } else {
-        x.style.color = 'white';
-    }
+function emptyCells() {
+  return origBoard.filter(s => typeof s == 'number');
 }
 
+function bestSpot() {
+  return minimax(origBoard, aiPlayer).index;
+}
 
+function minimax(newBoard, player) {
+  var availSpots = emptyCells();
+
+  if (checkWin(newBoard, huPlayer)) {
+      return { score: -10 };
+  } else if (checkWin(newBoard, aiPlayer)) {
+      return { score: 10 };
+  } else if (availSpots.length === 0) {
+      return { score: 0 };
+  }
+  var moves = [];
+  for (var i = 0; i < availSpots.length; i++) {
+      var move = {};
+      move.index = newBoard[availSpots[i]];
+      newBoard[availSpots[i]] = player;
+
+      if (player == aiPlayer) {
+          var result = minimax(newBoard, huPlayer);
+          move.score = result.score;
+      } else {
+          var result = minimax(newBoard, aiPlayer);
+          move.score = result.score;
+      }
+
+      newBoard[availSpots[i]] = move.index;
+
+      moves.push(move);
+  }
+
+  var bestMove;
+  if (player === aiPlayer) {
+      var bestScore = -10000;
+      for (var i = 0; i < moves.length; i++) {
+          if (moves[i].score > bestScore) {
+              bestScore = moves[i].score;
+              bestMove = i;
+          }
+      }
+  } else {
+      var bestScore = 10000;
+      for (var i = 0; i < moves.length; i++) {
+          if (moves[i].score < bestScore) {
+              bestScore = moves[i].score;
+              bestMove = i;
+          }
+      }
+  }
+
+  return moves[bestMove];
+}
+
+function resizeElem() {
+  realWidth = window.innerWidth * 0.95;
+  realWidth = realWidth > 600 ? 600 : realWidth;
+  realWidth = realWidth * 1.3 > window.innerHeight ? window.innerHeight / 1.2 : realWidth;
+  $('.container').css({width: realWidth + "px"});
+  $('.container').css({height: realWidth * 1.2 + "px"});
+  $('.wrapper').css({fontSize: realWidth * 0.18 + "px"});
+  $('.wrapper').css({width: realWidth + "px"});
+  $('.wrapper').css({height: realWidth + "px"});
+  $('td').css({width: realWidth * 0.25 + "px"});
+  $('td').css({height: realWidth * 0.25 + "px"});
+  $('.switch-button').css({zoom: realWidth * 0.22 + "%"});
+  $('#info').css({fontSize: realWidth * 0.06 + "px"});
+  console.log(realWidth);
+}
+
+$('#btndisclaimer').click( () => {
+  if ($('#btndisclaimer').css('color') == 'rgb(255, 255, 255)') {
+    $('#btndisclaimer').css({color: 'transparent'});
+  } else { $('#btndisclaimer').css({color: 'white'}) }
+})

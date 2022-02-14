@@ -13,30 +13,34 @@
     <meta property="description" content="Jogo da Velha" />
     <meta property="og:image" content="https://rrishi.github.io/tictactoe/preview.jpg" />
     <link rel='stylesheet' href="styles.css">
+    <script src="jquery-3.6.0.min.js"></script>
 </head>
 <body>
     <div class="container" id="container">
+        <div class="switch-button">
+            <input class="switch-button-checkbox" type="checkbox"></input>
+            <label class="switch-button-label" for=""><span class="switch-button-label-span">2 Players</span></label>
+        </div>
+        <div id="info"></div>
         <table class="wrapper">
             <tr>
-                <td id="sqr1"></td>
-                <td id="sqr2"></td>
-                <td id="sqr3"></td>
+                <td class="cell" id="0"></td>
+                <td class="cell" id="1"></td>
+                <td class="cell" id="2"></td>
             </tr>
             <tr>
-                <td id="sqr4"></td>
-                <td id="sqr5"></td>
-                <td id="sqr6"></td>
+                <td class="cell" id="3"></td>
+                <td class="cell" id="4"></td>
+                <td class="cell" id="5"></td>
             </tr>
             <tr>
-                <td id="sqr7"></td>
-                <td id="sqr8"></td>
-                <td id="sqr9"></td>
+                <td class="cell" id="6"></td>
+                <td class="cell" id="7"></td>
+                <td class="cell" id="8"></td>
             </tr>
         </table>
     </div>
-
     <div id="modal" class="modal animated fadeIn">
-
         <!-- Modal content -->
         <div class="modal-content">
             <div class="modal-header">
@@ -46,16 +50,12 @@
             <btn id="restartBtn">Play Again</btn>
         </div>
         </div>
-
     </div>
-
     <div class="form-group" style="margin-top: 12%; float:right; position: relative; ">
         <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
-          <button onclick = "ShowAndHide()" style = "bottom:0%;right:0%;position:fixed;" type="submit" id="btndisclaimer">RRS</button>
-
+          <button style = "bottom:0%;right:0%;position:fixed;" type="submit" id="btndisclaimer">RRS</button>
         </div>
     </div>
-
     <script src="scripts.js"></script>
 </body>
 </html>
