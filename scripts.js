@@ -162,7 +162,6 @@ function resizeElem() {
   $('td').css({height: realWidth * 0.25 + "px"});
   $('.switch-button').css({zoom: realWidth * 0.22 + "%"});
   $('#info').css({fontSize: realWidth * 0.06 + "px"});
-  console.log(realWidth);
 }
 
 $('#btndisclaimer').click( () => {
