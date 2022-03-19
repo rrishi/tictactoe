@@ -1,0 +1,37 @@
+{
+    "name": "TicTacToe A.I.",
+    "short_name": "TTT AI",
+    "start_url": "./?home=true",
+    "id": "./?home=true",
+    "icons": [
+        {
+            "src": "./images/manifest-icon-192.maskable.png",
+            "sizes": "192x192",
+            "type": "image/png",
+            "purpose": "any"
+          },
+          {
+            "src": "./images/manifest-icon-192.maskable.png",
+            "sizes": "192x192",
+            "type": "image/png",
+            "purpose": "maskable"
+          },
+          {
+            "src": "./images/manifest-icon-512.maskable.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "any"
+          },
+          {
+            "src": "./images/manifest-icon-512.maskable.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "maskable"
+          }
+    ],
+    "display": "fullscreen",
+    "orientation": "portrait",
+    "background_color": "#9b4d39",
+    "theme_color": "#9b4d39"
+
+}

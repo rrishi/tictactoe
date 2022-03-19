@@ -1,4 +1,4 @@
-let realWidth; resizeElem(); let player = "X"; let gameMode = '2 players';
+let realWidth; resizeElem(); let player = "X"; let gameMode = '2 players'; let gameWon;
 let origBoard; const aiPlayer = '🤖'; const huPlayer = 'X';
 const winCombos = [[0, 1, 2],[3, 4, 5],[6, 7, 8],[0, 3, 6],[1, 4, 7],[2, 5, 8],[0, 4, 8],[6, 4, 2]]
 origBoard = Array.from(Array(9).keys());
@@ -26,12 +26,11 @@ function onClick() {
     if (this.innerHTML == "") {
       player == 'X' ? this.innerHTML = "X" : this.innerHTML = "O";
       origBoard[this.id] = player;
-      let gameWon = checkWin(origBoard, player)
-      if (gameWon) {
+      gameWon = checkWin(origBoard, player)
+      if (gameWon || emptyCells().length == 0) {
         endGame(gameWon);
       } else {
         player = player == "X" ? "O" : "X";
-        if (emptyCells().length == 0) { endGame(gameWon) };
         $("#info").html("Next player: " + player);
       }
     }
@@ -39,7 +38,7 @@ function onClick() {
     if (this.innerHTML == "") {
       this.innerHTML = huPlayer;
       origBoard[this.id] = huPlayer;
-      let gameWon = checkWin(origBoard, huPlayer);
+      gameWon = checkWin(origBoard, huPlayer);
       if (gameWon || emptyCells().length == 0) {
         endGame(gameWon);
       } else { // AI turn
@@ -47,7 +46,7 @@ function onClick() {
         function AIturn() {
           sqr(bestSpot()).innerHTML = aiPlayer;
           origBoard[bestSpot()] = aiPlayer;
-          let gameWon = checkWin(origBoard, aiPlayer);
+          gameWon = checkWin(origBoard, aiPlayer);
           if (gameWon) endGame(gameWon);
         }
       }
@@ -71,13 +70,13 @@ function checkWin(board, player) {
 }
 
 function endGame(checkWin) {
-  if (emptyCells().length == 0) {
-      $("#modal_text").html("Tie  game !");
-      $("#modal").css({display: "block"});
-  } else {
+  if (gameWon) {
     for (let i of winCombos[checkWin.index]) sqr(i).style.background = "rgba(255, 0, 0, 0.3)";
     $("#modal_text").html(`Player  ${checkWin.player}  wins !`);
     $("#modal").css({display: "block"});
+  } else if (emptyCells().length == 0) {
+      $("#modal_text").html("Tie  game !");
+      $("#modal").css({display: "block"});
   }
 }
 
